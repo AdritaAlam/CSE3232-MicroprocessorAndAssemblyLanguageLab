@@ -84,14 +84,14 @@ MAIN PROC
         MOV CNT,1
         
         ;INC SI
-        JMP LOOP1
+        JMP UPDATE
         
     UPDATE_L:
         MOV LAST,DL
         MOV CNT,1
         
         ;INC SI
-        JMP LOOP1 
+        JMP UPDATE 
         
         
     NOTFOUND:
