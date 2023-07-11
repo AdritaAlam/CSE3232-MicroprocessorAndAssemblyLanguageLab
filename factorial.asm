@@ -2,75 +2,73 @@
 .STACK 100H
 
 .DATA
-    MSG1 DB 'ENTER THE INPUT DIGIT: $'
-    MSG2 DB 'THE REQUIRED OUTPUT: $'
+    MSG DB 'ENTER A NUMBER : $' 
+    NEWLINE DB 13,10,'$'
     
-    ANS DB ? 
-    M DB ? 
-    INPUT DB ?
+    N DB ?
+    TWO DB 2 
+    ANS DB ?
+    
     
 .CODE
 MAIN PROC
     MOV AX,@DATA
     MOV DS,AX
     
-    LEA DX,MSG1
+    LEA DX,MSG
     MOV AH,9
     INT 21H
     
     MOV AH,1
-    INT 21H    
+    INT 21H 
     
-    SUB AL,48 
+    SUB AL,48
     
+    MOV N,AL
     
-    MOV M,AL
-    MOV BL,AL 
     MOV AL,1
-    CMP BL,0
-    JZ ENDLOOP1: 
+    CMP N,1
+    JLE OUTPUT 
     
-    MOV AL,M
+    ;MOV M,N
+     MOV AL,N 
     
-    
-    LOOP1:  
-        DEC M    
-        MUL M
-        DEC BL
-        CMP BL,1
-        JZ ENDLOOP1
-        JMP LOOP1:
-        
-    ENDLOOP1: 
-    
-    MOV ANS,AL 
-    
-    MOV AH,2
-    MOV AH,13
-    INT 21H        
-    MOV AH,2
-    MOV AH,10
-    INT 21H
-    
-    LEA DX,MSG2
-    MOV AH,9
-    INT 21H 
-        
-    MOV DL,ANS
-    ADD DL,48
-        
-    MOV AH,2
-    INT 21H
-        
-    MOV AH,4CH
-    INT 21H 
+    RESULT:  
     
         
- MAIN ENDP
+       
+        CMP N,1
+        JE OUTPUT
         
+        DEC N
+        MUL N
         
-        
+        JMP RESULT
         
         
         
     
+    
+    OUTPUT:
+    
+        MOV ANS,AL
+        
+        LEA DX,NEWLINE
+        MOV AH,9
+        INT 21H
+        
+        
+        
+        MOV AH,2 
+        ADD ANS,48
+        MOV DL,ANS
+        
+        INT 21H
+   
+    EXIT:
+        MOV AH,4CH
+        INT 21H
+MAIN ENDP         
+    
+     
+       

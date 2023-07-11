@@ -2,16 +2,15 @@
 .STACK 100H
 
 .DATA
-    MSG1 DB 'ENTER THE INPUT DIGIT: $'
-    MSG2 DB 'THE REQUIRED OUTPUT: $' 
-    NEWLINE DB 10,13,'$'
+    MSG DB 'ENTER A NUMBER : $'  
+    PMSG DB 'PRIME.$'
+    NPMSG DB 'NOT PRIME .$'
+    NEWLINE DB 13,10,'$'
     
-    
-    YESMSG DB 'YES,PRIME$'
-    NOMSG DB 'NOT PRIME.$' 
-    
-    
-    DVND DB ?
+    N DB ? 
+    M DB ?
+    TWO DB 2 
+    ANS DB ?
     
     
 .CODE
@@ -19,78 +18,57 @@ MAIN PROC
     MOV AX,@DATA
     MOV DS,AX
     
-    LEA DX,MSG1
+    LEA DX,MSG
     MOV AH,9
-    INT 21H
+    INT 21H 
+    
     
     MOV AH,1
     INT 21H 
     
-    SUB AL,48
-     
+    SUB AL,48  
     
+    CMP AL,1
+    JLE NOT_PRIME
     
-    MOV DVND,AL  
+    MOV N,AL
+    MOV M,AL 
+    DEC M
     
-    
-    CMP DVND,2
-    JLE NOTPRIME
-    
-    
-    MOV CL,AL 
-    DEC CL 
-    
-    MOV AH,9
-    LEA DX ,NEWLINE 
-    INT 21H
+    CHECK: 
+        MOV AH,0
+        MOV AL,N
+        DIV M 
         
-        
-    MOV AH,9
-    LEA DX ,MSG2 
-    INT 21H   
-    
-    CHECKPRIME:
-       
-        
-        MOV AL,DVND
-        MOV AH,0  
-        DIV CL
         
         CMP AH,0
-        JE NOTPRIME
-     
-        CMP CL,2
-        JE PRIME  
-        LOOP CHECKPRIME 
+        JE NOT_PRIME 
         
+        CMP M,2
+        JLE PRIME 
         
-    PRIME:  
+        DEC M
         
-        LEA DX,YESMSG
+        JMP CHECK
+        
+    PRIME:
+        LEA DX,PMSG
         MOV AH,9
-        INT 21H
-        JMP EXIT
+        INT 21H     
         
-    NOTPRIME: 
+        JMP EXIT  
         
-        LEA DX,NOMSG
+    NOT_PRIME:
+        LEA DX,NPMSG
         MOV AH,9
-        INT 21H
-        JMP EXIT
-        
-        
-  
+        INT 21H   
     
-    EXIT:    
+        
+   
+    EXIT:
         MOV AH,4CH
-        INT 21H 
+        INT 21H
+MAIN ENDP         
     
-        
- MAIN ENDP
-        
-        
-        
-        
-        
-        
-    
+     
+       

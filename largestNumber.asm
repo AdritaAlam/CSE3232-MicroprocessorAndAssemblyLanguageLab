@@ -1,69 +1,89 @@
 .MODEL SMALL
 .STACK 100H
 
-
 .DATA
-    MSG1 DB 'ENTER SOME NUMBERS FROM 0 TO 9: $'
-    MSG2 DB 'THE REQUIRED LARGEST NUMBER : $' 
+    MSG DB 'ENTER A NUMBER : $'  
+    
     NEWLINE DB 13,10,'$'
-     
-
-.CODE   
-
+    
+    STR DB DUP ('$') 
+    MAX DB ?
+    
+    N DB ? 
+    M DB ?
+    TWO DB 2 
+    ANS DB ?
+    
+    
+.CODE
 MAIN PROC
     MOV AX,@DATA
     MOV DS,AX
     
-    LEA DX,MSG1
+    LEA DX,MSG
     MOV AH,9
     INT 21H 
-     
-    MOV BL,1
+    
+    MOV SI,0
     
     INPUT:
         MOV AH,1
-        INT 21H
-        
+        INT 21H 
+    
         
         CMP AL,13
-        JE OUTPUT    
+        JE ENDINPUT
         
-        CMP AL,BL
-        JG CHECK
+        
+        SUB AL,48 
+        
+        MOV STR[SI],AL
+        INC SI
         JMP INPUT
         
-    CHECK:    
-        MOV BL,AL
-        JMP INPUT
+         
+    ENDINPUT:
         
-    OUTPUT:
-        ;PRINT NEWLINE
-        MOV AH,9
+        MOV DI,SI
+        MOV SI,0 
+        MOV BL,STR[SI]  
+        MOV MAX,BL
+        INC SI
+        
+    CHECK:
+        MOV AL,STR[SI]
+        CMP AL,MAX
+        JG SWAP 
+            
+        CMP SI,DI
+        JE OUTPUT
+            
+        INC SI 
+        JMP CHECK
+            
+    SWAP:
+        MOV BL,STR[SI]
+        MOV MAX,BL
+        JMP CHECK
+        
+    OUTPUT:  
         LEA DX,NEWLINE
-        INT 21H
-        MOV DI,0
-        
-        ;PRINT OUTPUT MSG
         MOV AH,9
-        LEA DX,MSG2
         INT 21H
-    
-        ;PRINT RESULT
-        MOV DL,BL 
         
+        ADD MAX,48
+        MOV DL,MAX
         MOV AH,2
         INT 21H
-        JMP EXIT
+            
+       
+    
         
+   
     EXIT:
         MOV AH,4CH
-        INT 21H 
-        
-MAIN ENDP
-        
-      
-   
-        
-        
-   
+        INT 21H
+MAIN ENDP         
     
+     
+       

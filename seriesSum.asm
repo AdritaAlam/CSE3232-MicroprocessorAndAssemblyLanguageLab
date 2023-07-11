@@ -2,9 +2,7 @@
 .STACK 100H
 
 .DATA
-    MSG DB 'ENTER A NUMBER : $'  
-    EMSG DB 'EVEN.$'
-    OMSG DB 'ODD . $'
+    MSG DB 'ENTER A NUMBER : $' 
     NEWLINE DB 13,10,'$'
     
     N DB ?
@@ -19,30 +17,31 @@ MAIN PROC
     
     LEA DX,MSG
     MOV AH,9
-    INT 21H 
-    
+    INT 21H
     
     MOV AH,1
     INT 21H 
     
     SUB AL,48
     
-    DIV TWO
+    MOV N,AL
+    INC N
     
-    CMP AH,1
-    JE ODD
+    MUL N
+    DIV TWO 
     
-    EVEN:
-        LEA DX,EMSG
-        MOV AH,9
-        INT 21H
-        
-        JMP EXIT
-    ODD:
-        LEA DX,OMSG
-        MOV AH,9
-        INT 21H
-        
+    ADD AL,48
+    MOV ANS,AL
+    
+    LEA DX,NEWLINE
+    MOV AH,9
+    INT 21H
+    
+    
+    MOV AH,2 
+    MOV DL,ANS
+    
+    INT 21H
    
     EXIT:
         MOV AH,4CH
